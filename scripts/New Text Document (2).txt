@@ -1,0 +1,32 @@
+import pymysql
+import pandas as pd
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Establish connection
+conn = pymysql.connect(
+    host=os.getenv("DB_HOST"),
+    port=int(os.getenv("DB_PORT")),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME")
+)
+
+# Define SQL query
+query = """
+SELECT `Invoice Date`, `Vehicle Model`, `Current KM Reading`, `INVOICE LINE TEXT`
+FROM service_data
+ORDER BY `Invoice Date` ASC;
+"""
+
+# Fetch data
+df = pd.read_sql(query, conn)
+
+# Close connection
+conn.close()
+
+# Display first few rows
+print(df.head())
